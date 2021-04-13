@@ -204,8 +204,6 @@ def kd_selector():
         
         if meal_found == False:
             victims_wout_placement.append(victim)
-
-    print(victims_wout_placement)
     
     numLeft = len(victims_wout_placement)
     victimIndexer = 0
@@ -247,8 +245,6 @@ def write_txt():
     outputFile.close()
 
 write_txt()
-
-pprint(kdtime_to_victim)
 
 
 
