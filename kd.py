@@ -13,7 +13,7 @@ NEW_MEMBERS = ["AANJAN", "ANKITH", "TONY", "PRAX", "LUKE", "MATEO", "SANDRO"]
 # NO need to pass in extension for file name here 
 def convert_to_csv(fileName):
     Xlsx2csv(fileName +".xlsx", outputencoding="utf-8").convert(fileName + ".csv")
-    print("Succesfully exported {}.xlsx to {}.csv".format(fileName, fileName))
+    print("Succesfully exported {}.xlsx to {}.csv .....".format(fileName, fileName))
 
 convert_to_csv(KD_COUNT)
 convert_to_csv(MEAL_SIGN_UPS)
@@ -79,7 +79,6 @@ def add_to_meal_time_to_people(name_to_add, index):
 
 def map_names_to_kdcount():
     file_kd_count = open("KD_Count.csv", "r")
-
     kd_count_header = file_kd_count.readline()
     
     # index 0: name 
@@ -139,13 +138,6 @@ def assign_people_to_meal_time():
 
 
 assign_people_to_meal_time()   
-# print(list_of_names)
-# pprint(meal_time_to_people)
-# print(kd_count_to_name)
-
-# kd_selector () actually assigns kd for the week: 
-# note this does not auto increment their kd count do this manually so you only count it when they do it etc
-# of kds for the week: 19 
 
 kdtime_to_victim = {
     "MONDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
@@ -167,7 +159,6 @@ def kd_selector():
 
     minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
     
-
     # victim selection
     while numPeople < 19:
         toAdd = kd_count_to_name[minimumNumOfKD]
@@ -233,7 +224,6 @@ def kd_selector():
                         numLeft -= 1
          
 kd_selector()
-
 
 def write_txt(): 
     outputFile = open("kd_for_the_week.txt","w")
