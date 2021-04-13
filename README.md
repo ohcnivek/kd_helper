@@ -1,4 +1,4 @@
-# kd_helper
+# kd_helper 🍴🍴🍴
 - a classic example of automation taking over a job (kitchen assistant rip)!
 
 ## how to clone repo:
