@@ -1,4 +1,4 @@
-# kd_helper 🍴🍴🍴
+# kitchen_duty_selector 🍴🍴🍴
 - rip kitchen assistant!
 
 ## How to clone the repo:
