@@ -19,9 +19,8 @@ convert_to_csv(KD_COUNT)
 convert_to_csv(MEAL_SIGN_UPS)
 convert_to_csv(KDS)
 
-# list of lists maps num of kd to name  
+# maps kd count to a list of all the people with that number of kds done
 kd_count_to_name = {}
-
 # list of people who can do KD's - no pledges and no grad bros 
 list_of_names = []
 
@@ -40,19 +39,18 @@ meal_time_to_people = {
 }
 
 
-
-# will only add to meal_time_to_people if they are eligible to do a kd 
+# index 2: monday lunch
+# index 3:monday dinner
+# index 4:tuesday lunch 
+# index 5:tuesday dinner
+# index 6:wednesday lunch 
+# index 7:wednesday dinner
+# index 8:thursday lunch 
+# index 9:thursday dinner 
+# index 10:friday lunch 
+# index 11:sunday dinner
+# This will only add to meal_time_to_people if they are eligible to do a kd 
 def add_to_meal_time_to_people(name_to_add, index):
-        # index 2: monday lunch
-        # index 3:monday dinner
-        # index 4:tuesday lunch 
-        # index 5:tuesday dinner
-        # index 6:wednesday lunch 
-        # index 7:wednesday dinner
-        # index 8:thursday lunch 
-        # index 9:thursday dinner 
-        # index 10:friday lunch 
-        # index 11:sunday dinner
     if (name_to_add in list_of_names):
         if (index == 2 and name_to_add not in meal_time_to_people["MONDAY_LUNCH"]):
             meal_time_to_people["MONDAY_LUNCH"].append(name_to_add)
@@ -90,9 +88,7 @@ def map_names_to_kdcount():
     for line in kd_count_info:
         line = line.split(",")
         if (line[0] != '' and line[0] != ''):
-
             giveKD = (line[2] == '') # this means that if you add anythinng to the dont give kd line, it wont give them a kd
-
             if (giveKD):
                 name = line[0].strip().upper()
                 list_of_names.append(name)
@@ -103,7 +99,7 @@ def map_names_to_kdcount():
                 else:
                     kd_count_to_name[kdCount] = [name]
 
-map_names_to_kdcount()
+# map_names_to_kdcount()
 
 
 def assign_people_to_meal_time():
@@ -137,7 +133,7 @@ def assign_people_to_meal_time():
                     add_to_meal_time_to_people(name, index)
 
 
-assign_people_to_meal_time()   
+# assign_people_to_meal_time()   
 
 kdtime_to_victim = {
     "MONDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
@@ -156,7 +152,6 @@ def kd_selector():
 
     numPeople = 0
     victims = []
-
     minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
     
     # victim selection
@@ -172,7 +167,6 @@ def kd_selector():
         del kd_count_to_name[minimumNumOfKD] # deleting min key 
         minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
     
-
     # pick random indices here to replace w pledges 
     # of kds to be taken care by new members
     # EDIT LOGIC HERE TO ADJUST NEW MEMBER FREQUENCIES 
@@ -183,9 +177,7 @@ def kd_selector():
         unlucky_new_mem_index = random.randrange(0, len(NEW_MEMBERS),1)
         victims[lucky_index] = NEW_MEMBERS[unlucky_new_mem_index]
 
-
     victims_wout_placement = []
-
 
     for victim in victims:
         meal_found = False
@@ -221,7 +213,7 @@ def kd_selector():
                         victimIndexer += 1
                         numLeft -= 1
          
-kd_selector()
+# kd_selector()
 
 def write_txt(): 
     outputFile = open("kd_for_the_week.txt","w")
@@ -244,11 +236,6 @@ def write_txt():
 
     outputFile.close()
 
-write_txt()
-
-
-
-
-
+# write_txt()
 
 
