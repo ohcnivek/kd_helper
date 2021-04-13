@@ -1,7 +1,7 @@
 # kd_helper 🍴🍴🍴
-- a classic example of automation taking over job (rip kitchen assistant)!
+- rip kitchen assistant!
 
-## how to clone repo:
+## How to clone the repo:
 - skip this part if youre familiar w git at all
 - go to the command line & run `git clone <https link which can be copied when you hit on code on the main page>`
 
@@ -12,7 +12,7 @@
 ## dependencies: 
 - python3 (obviously lol)
 - run `pip3 install xlsx2csv`
-- try `pip install xlsx2csv` if you dont have python3
+- try `pip install xlsx2csv` if you don't have python3
 
 ## notes: 
 - If individual didnt fill out a meal time or gets a late plate more than 7 times a week (bruh what), they are marked down as available to kd for every meal. Didnt provide a preference, their fault. Those that marked down a time should get priority for those meals. 
