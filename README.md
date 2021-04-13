@@ -5,6 +5,10 @@
 - skip this part if youre familiar git at all
 - go to the command line & run `git clone <https link which can be copied when you hit on code on the main page>`
 
+## how to run 
+- `python3 kd_helper.py`
+- a text file, `kd_for_the_week.txt`, will be generated that details the kds for the week. 
+
 ## dependencies: 
 - python3 (obviously lol)
 - run `pip3 install xlsx2csv`
