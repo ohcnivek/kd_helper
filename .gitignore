@@ -1,4 +1,6 @@
 *.csv
 *.xlsx
 *.DS_Store
+__pycache__/
+*.txt
 
