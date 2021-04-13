@@ -9,21 +9,6 @@ KDS = "KDs"
 
 NEW_MEMBERS = ["AANJAN", "ANKITH", "TONY", "PRAX", "LUKE", "MATEO", "SANDRO"]
 
-# Need to do pip install xlxsx2csv or pip3 install xlxsx2csv
-# NO need to pass in extension for file name here 
-def convert_to_csv(fileName):
-    Xlsx2csv(fileName +".xlsx", outputencoding="utf-8").convert(fileName + ".csv")
-    print("Succesfully exported {}.xlsx to {}.csv .....".format(fileName, fileName))
-
-convert_to_csv(KD_COUNT)
-convert_to_csv(MEAL_SIGN_UPS)
-convert_to_csv(KDS)
-
-# maps kd count to a list of all the people with that number of kds done
-kd_count_to_name = {}
-# list of people who can do KD's - no pledges and no grad bros 
-list_of_names = []
-
 # meal time mapped to people
 meal_time_to_people = {
     "MONDAY_LUNCH": [],
@@ -38,17 +23,49 @@ meal_time_to_people = {
     "SUNDAY_DINNER": []
 }
 
+kdtime_to_victim = {
+    "MONDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
+    "MONDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
+    "TUESDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
+    "TUESDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
+    "WEDNESDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
+    "WEDNESDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
+    "THURSDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
+    "THURSDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
+    "FRIDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
+    "SUNDAY_DINNER": {6: "EMPTY"}
+}
 
-# index 2: monday lunch
-# index 3:monday dinner
-# index 4:tuesday lunch 
-# index 5:tuesday dinner
-# index 6:wednesday lunch 
-# index 7:wednesday dinner
-# index 8:thursday lunch 
-# index 9:thursday dinner 
-# index 10:friday lunch 
-# index 11:sunday dinner
+meals_list = [
+    "MONDAY_LUNCH",
+    "MONDAY_DINNER",
+    "TUESDAY_LUNCH",
+    "TUESDAY_DINNER",
+    "WEDNESDAY_LUNCH",
+    "WEDNESDAY_DINNER",
+    "THURSDAY_LUNCH",
+    "THURSDAY_DINNER",
+    "FRIDAY_LUNCH",
+    "SUNDAY_DINNER"
+]
+
+
+# maps kd count to a list of all the people with that number of kds done
+kd_count_to_name = {}
+# list of people who can do KD's - no pledges and no grad bros 
+list_of_names = []
+
+# Need to do pip install xlxsx2csv or pip3 install xlxsx2csv
+# NO need to pass in extension for file name here 
+def convert_to_csv(fileName):
+    Xlsx2csv(fileName +".xlsx", outputencoding="utf-8").convert(fileName + ".csv")
+    print("Succesfully exported {}.xlsx to {}.csv .....".format(fileName, fileName))
+
+convert_to_csv(KD_COUNT)
+convert_to_csv(MEAL_SIGN_UPS)
+convert_to_csv(KDS)
+
+
 # This will only add to meal_time_to_people if they are eligible to do a kd 
 def add_to_meal_time_to_people(name_to_add, index):
     if (name_to_add in list_of_names):
@@ -73,8 +90,6 @@ def add_to_meal_time_to_people(name_to_add, index):
         elif (index == 11 and name_to_add not in meal_time_to_people["SUNDAY_DINNER"]):
             meal_time_to_people["SUNDAY_DINNER"].append(name_to_add)
 
-
-
 def map_names_to_kdcount():
     file_kd_count = open("KD_Count.csv", "r")
     kd_count_header = file_kd_count.readline()
@@ -98,8 +113,6 @@ def map_names_to_kdcount():
                     kd_count_to_name[kdCount].append(name)
                 else:
                     kd_count_to_name[kdCount] = [name]
-
-# map_names_to_kdcount()
 
 
 def assign_people_to_meal_time():
@@ -132,21 +145,6 @@ def assign_people_to_meal_time():
                     # handles grad bro logic in add_to_meal_time_to_people
                     add_to_meal_time_to_people(name, index)
 
-
-# assign_people_to_meal_time()   
-
-kdtime_to_victim = {
-    "MONDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
-    "MONDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
-    "TUESDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
-    "TUESDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
-    "WEDNESDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
-    "WEDNESDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
-    "THURSDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
-    "THURSDAY_DINNER": {5: "EMPTY", 6: "EMPTY"},
-    "FRIDAY_LUNCH": {11: "EMPTY", 12: "EMPTY"},
-    "SUNDAY_DINNER": {6: "EMPTY"}
-}
 
 def kd_selector():
 
@@ -213,29 +211,15 @@ def kd_selector():
                         victimIndexer += 1
                         numLeft -= 1
          
-# kd_selector()
 
 def write_txt(): 
     outputFile = open("kd_for_the_week.txt","w")
-    meals_list = [
-        "MONDAY_LUNCH",
-        "MONDAY_DINNER",
-        "TUESDAY_LUNCH",
-        "TUESDAY_DINNER",
-        "WEDNESDAY_LUNCH",
-        "WEDNESDAY_DINNER",
-        "THURSDAY_LUNCH",
-        "THURSDAY_DINNER",
-        "FRIDAY_LUNCH",
-        "SUNDAY_DINNER"
-    ]
+
 
     for meal in meals_list:
         for time in kdtime_to_victim[meal]:
             outputFile.write("{}, {}, : {}\n".format(meal, time, kdtime_to_victim[meal][time]))
 
     outputFile.close()
-
-# write_txt()
 
 
