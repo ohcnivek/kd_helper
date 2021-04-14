@@ -2,14 +2,18 @@ from xlsx2csv import Xlsx2csv
 from pprint import pprint
 import random
 
-# CONSTANTS 
+# CONSTANTS: The values of KD_COUNT, MEAL_SIGN_UPS, NEW_KD_SHEET should only change when the excel sheet names change. 
 KD_COUNT = "KD_Count"
 MEAL_SIGN_UPS = "Meal-Sign-Ups-Spring-2021"
-KDS = "KDs" 
-
+NEW_KD_SHEET = "KDs_for_the_week"
 NEW_MEMBERS = ["AANJAN", "ANKITH", "TONY", "PRAX", "LUKE", "MATEO", "SANDRO"]
+TOTAL_KDS_PER_WEEK = 19
 
-# meal time mapped to people
+# Kitchen Assistant should change these values as they see fit: 
+DIDNT_FILL_OUT_FORM_MAX_COUNT = 3 # If they didnt fill out a time for this many meals, they will be marked as "available" to KD for every meal. Those who marked the times they are eating will get priority. 
+NUMBER_OF_LATE_PLATES_PER_WEEK_MAX_COUNT = 7 # If they get a late plate this many number of times, they will be marked as "available" to KD for every meal. 
+NEW_MEMBERS_COVER_THIS_AMOUNT_OF_KDS = 7 #Number of KDs you want covered by New Members. 
+
 meal_time_to_people = {
     "MONDAY_LUNCH": [],
     "MONDAY_DINNER": [],
@@ -49,26 +53,20 @@ meals_list = [
     "SUNDAY_DINNER"
 ]
 
-
-# maps kd count to a list of all the people with that number of kds done
 kd_count_to_name = {}
-# list of people who can do KD's - no pledges and no grad bros 
-list_of_names = []
+list_of_names = [] # NOTE: THIS LIST WILL NOT INCLUDE NEW MEMBERS & GRAD BROS. LOGIC FOR HANDLING NEW MEMBER'S IS IN KD_SELECTOR
 
-# Need to do pip install xlxsx2csv or pip3 install xlxsx2csv
-# NO need to pass in extension for file name here 
+
 def convert_to_csv(fileName):
     Xlsx2csv(fileName +".xlsx", outputencoding="utf-8").convert(fileName + ".csv")
     print("Succesfully exported {}.xlsx to {}.csv .....".format(fileName, fileName))
 
 convert_to_csv(KD_COUNT)
 convert_to_csv(MEAL_SIGN_UPS)
-convert_to_csv(KDS)
 
 
-# This will only add to meal_time_to_people if they are eligible to do a kd 
 def add_to_meal_time_to_people(name_to_add, index):
-    if (name_to_add in list_of_names):
+    if (name_to_add in list_of_names): #VALIDATING THAT THEY ARE AVAILABLE TO DO A KD AKA NOT A GRADUATING BROTHER/NEW MEMBER
         if (index == 2 and name_to_add not in meal_time_to_people["MONDAY_LUNCH"]):
             meal_time_to_people["MONDAY_LUNCH"].append(name_to_add)
         elif (index == 3 and name_to_add not in meal_time_to_people["MONDAY_DINNER"]):
@@ -91,18 +89,15 @@ def add_to_meal_time_to_people(name_to_add, index):
             meal_time_to_people["SUNDAY_DINNER"].append(name_to_add)
 
 def map_names_to_kdcount():
-    file_kd_count = open("KD_Count.csv", "r")
-    kd_count_header = file_kd_count.readline()
-    
-    # index 0: name 
-    # index 1: num of Kds
-    # index 2: dont give kd
+    file_kd_count = open(KD_COUNT + ".csv", "r")
+    file_kd_count.readline()
     kd_count_info = file_kd_count.readlines()
     
-    # logic for populating kd_count_info
+    # POPULATING kd_count_info
     for line in kd_count_info:
         line = line.split(",")
-        if (line[0] != '' and line[0] != ''):
+        name = line[0]
+        if (name != ''):
             giveKD = (line[2] == '') # this means that if you add anythinng to the dont give kd line, it wont give them a kd
             if (giveKD):
                 name = line[0].strip().upper()
@@ -116,22 +111,22 @@ def map_names_to_kdcount():
 
 
 def assign_people_to_meal_time():
-    file_meal_sign_ups = open("Meal-Sign-Ups-Spring-2021.csv", "r")
-    meal_sign_ups_header = file_meal_sign_ups.readline()
+    file_meal_sign_ups = open( MEAL_SIGN_UPS + ".csv", "r")
+    file_meal_sign_ups.readline()
     meal_sign_ups_info = file_meal_sign_ups.readlines()
 
     for line in meal_sign_ups_info:
         line = line.split(",")
-        if (line[0] != '' and line[1] != ''):
+        submission_time = line[0]
+        name = line[1]
+        if (submission_time!= '' and name != ''):
             name = line[1].upper().strip()
-
             latePlateCounterForPerson = 0
             noFill = 0
 
-            for index in range(2,12):
+            for index in range(2,12): # 2-12 because these are the indexes that contain meal times/ info about attendance
                 mealTime = line[index].strip()
-                
-                if (mealTime == "11" or mealTime == "12" or mealTime == "5" or mealTime == "6") and mealTime != '':
+                if (mealTime == "11" or mealTime == "12" or mealTime == "5" or mealTime == "6"):
                     add_to_meal_time_to_people(name, index)
                 elif (line[index] == "Late"):
                     latePlateCounterForPerson += 1
@@ -139,25 +134,21 @@ def assign_people_to_meal_time():
                     noFill +=1
 
 
-            # if they didnt fill out a meal time or get a late plate more than 5 times, assigns them to every possibility
-            if (noFill > 3 or latePlateCounterForPerson > 7):
+            if (noFill > DIDNT_FILL_OUT_FORM_MAX_COUNT or latePlateCounterForPerson > NUMBER_OF_LATE_PLATES_PER_WEEK_MAX_COUNT):
                 for index in range(2,12):
-                    # handles grad bro logic in add_to_meal_time_to_people
                     add_to_meal_time_to_people(name, index)
 
 
 def kd_selector():
-
     numPeople = 0
     victims = []
     minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
-    print(minimumNumOfKD)
-    
+
     # victim selection
-    while numPeople < 19:
+    while numPeople < TOTAL_KDS_PER_WEEK:
         toAdd = kd_count_to_name[minimumNumOfKD]
         for member in toAdd:
-            if (numPeople < 19): 
+            if (numPeople < TOTAL_KDS_PER_WEEK): 
                 victims.append(member)
                 numPeople += 1
             else:
@@ -166,15 +157,13 @@ def kd_selector():
         del kd_count_to_name[minimumNumOfKD] # deleting min key 
         minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
     
-    # pick random indices here to replace w pledges 
-    # of kds to be taken care by new members
-    # EDIT LOGIC HERE TO ADJUST NEW MEMBER FREQUENCIES 
-    new_member_kd_per_week = 7 
 
-    for num in range(new_member_kd_per_week + 1):
-        lucky_index = random.randrange(0, 19,1)
-        unlucky_new_mem_index = random.randrange(0, len(NEW_MEMBERS),1)
-        victims[lucky_index] = NEW_MEMBERS[unlucky_new_mem_index]
+    for num in range(NEW_MEMBERS_COVER_THIS_AMOUNT_OF_KDS + 1):
+        lucky_brother_index = random.randrange(0, len(victims), 1)
+        unlucky_new_mem_index = random.randrange(0, len(NEW_MEMBERS),1) #ENSURES THAT A NEW MEMBER ISNT CHOSEN TWICE
+        victims[lucky_brother_index] = NEW_MEMBERS[unlucky_new_mem_index]
+ 
+
 
     victims_wout_placement = []
 
@@ -211,9 +200,7 @@ def kd_selector():
     
 
 def write_txt(): 
-    outputFile = open("kd_for_the_week.txt","w")
-
-
+    outputFile = open(NEW_KD_SHEET + ".txt","w")
     for meal in meals_list:
         for time in kdtime_to_victim[meal]:
             outputFile.write("{}, {}, : {}\n".format(meal, time, kdtime_to_victim[meal][time]))
