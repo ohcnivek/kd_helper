@@ -165,8 +165,6 @@ def kd_selector():
 
         del kd_count_to_name[minimumNumOfKD] # deleting min key 
         minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
-
-    print(victims)
     
     # pick random indices here to replace w pledges 
     # of kds to be taken care by new members
@@ -179,8 +177,6 @@ def kd_selector():
         victims[lucky_index] = NEW_MEMBERS[unlucky_new_mem_index]
 
     victims_wout_placement = []
-
-    print(victims)
 
     for victim in victims:
         meal_found = False
