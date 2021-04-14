@@ -199,19 +199,16 @@ def kd_selector():
     numLeft = len(victims_wout_placement)
     victimIndexer = 0
 
-    if numLeft != 0:
-        while (numLeft != 0):
-
-            for meal in kdtime_to_victim: 
-                for time in kdtime_to_victim[meal]:
-                    if numLeft == 0:
-                        return
-
-                    if kdtime_to_victim[meal][time] == "EMPTY":
-                        kdtime_to_victim[meal][time] = victims_wout_placement[victimIndexer]
-                        victimIndexer += 1
-                        numLeft -= 1
-         
+    while (numLeft != 0):
+        for meal in kdtime_to_victim: 
+            for time in kdtime_to_victim[meal]:
+                if numLeft == 0:
+                    return
+                if kdtime_to_victim[meal][time] == "EMPTY":
+                    kdtime_to_victim[meal][time] = victims_wout_placement[victimIndexer]
+                    victimIndexer += 1
+                    numLeft -= 1
+    
 
 def write_txt(): 
     outputFile = open("kd_for_the_week.txt","w")
