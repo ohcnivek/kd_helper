@@ -130,9 +130,9 @@ def assign_people_to_meal_time():
 
             for index in range(2,12):
                 mealTime = line[index].strip()
-                 
-                if (mealTime == "11" or mealTime == "12") and mealTime != '':
-                    add_to_meal_time_to_people(name, int(line[index]))
+                
+                if (mealTime == "11" or mealTime == "12" or mealTime == "5" or mealTime == "6") and mealTime != '':
+                    add_to_meal_time_to_people(name, index)
                 elif (line[index] == "Late"):
                     latePlateCounterForPerson += 1
                 else:
@@ -151,6 +151,7 @@ def kd_selector():
     numPeople = 0
     victims = []
     minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
+    print(minimumNumOfKD)
     
     # victim selection
     while numPeople < 19:
@@ -164,6 +165,8 @@ def kd_selector():
 
         del kd_count_to_name[minimumNumOfKD] # deleting min key 
         minimumNumOfKD = min(k for k, v in kd_count_to_name.items())
+
+    print(victims)
     
     # pick random indices here to replace w pledges 
     # of kds to be taken care by new members
@@ -176,6 +179,8 @@ def kd_selector():
         victims[lucky_index] = NEW_MEMBERS[unlucky_new_mem_index]
 
     victims_wout_placement = []
+
+    print(victims)
 
     for victim in victims:
         meal_found = False
